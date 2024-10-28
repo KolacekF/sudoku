@@ -1,6 +1,7 @@
 <html>
     <head>
         <!--<script src="sudoku.js"></script>-->
+        <link rel="stylesheet" href="style.css">
         <style>
             #sudoku, #sudokuCustom{
                 font-family: monospace, monospace;
@@ -54,16 +55,16 @@
 
         <div id="sudoku" class="sudokuDiv">
         </div>
-        <div id="sudokuCustom" class="sudokuDiv">
-            <button id="sudokuCustomStart_btn" type="button">Start custom sudoku</button>
+        <div id="sudokuCustom" class="sudokuDiv hide">
+            <button id="sudokuCustomStart_btn" type="button" class="blocked_btn">Start custom sudoku</button>
         </div>
 
         <button id="solveSudoku_btn" type="button">Solve Sudoku!</button>
-        <p id="progress">number of iterations</p>
-        <input type="range" id="progress_bar" max="1" step="0.001" value="0"><br>
         <button id="fetchSudoku_btn" type="button">I'm feeling lucky</button>
-        <p><span>Difficulty: </span><span id="difficulty">custom</span></p>
         <button id="sudokuCustom_btn" type="button">Custom sudoku</button>
+        <p><span>Difficulty: </span><span id="difficulty">preset sudoku</span></p>
+        <p id="progress">number of iterations</p>
+        <input type="range" id="progress_bar" max="1" step="0.001" value="0" class="hide"><br>
         
 
         <script type="module">
@@ -141,6 +142,7 @@
 
 
             Progress.setElement(document.getElementById("progress_bar"));
+            CustomSudoku.create(document.getElementById("sudokuCustom"))
 
             document.getElementById("solveSudoku_btn").addEventListener("click", () => {S.Solve(25)});
             document.getElementById("fetchSudoku_btn").addEventListener("click", async (e) => {
@@ -150,11 +152,28 @@
                 document.getElementById("difficulty").innerHTML = obj.difficulty;
                 Progress.setSolution(obj.solution);
                 e.target.classList.remove("fetching");
+
+                document.getElementById("progress_bar").classList.remove("hide");
+                document.getElementById("progress_bar").classList.add("show");
             });
             document.getElementById("sudokuCustom_btn").addEventListener("click", () => {
-                CustomSudoku.create(document.getElementById("sudokuCustom"))
+                document.getElementById("difficulty").innerHTML = "custom";
+                document.getElementById("sudokuCustom").classList.toggle("hide");
+                document.getElementById("sudokuCustom").classList.toggle("show");
+                document.getElementById("sudokuCustomStart_btn").classList.toggle("blocked_btn");
+                document.getElementById("solveSudoku_btn").classList.toggle("blocked_btn");
+                document.getElementById("fetchSudoku_btn").classList.toggle("blocked_btn");
+
+                
+
+                
+
+                
             })
             document.getElementById("sudokuCustomStart_btn").addEventListener("click", () => {
+                document.getElementById("progress_bar").classList.add("hide");
+                document.getElementById("progress_bar").classList.remove("show");
+                
                 newSudoku(CustomSudoku.getValue());
                 S.Solve(2);
             })
