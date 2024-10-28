@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <!--<script src="sudoku.js"></script>-->
+        <style>
+            #sudoku, #sudokuCustom{
+                font-family: monospace, monospace;
+            }
+            .sudokuDiv table tr:nth-child(3n) td{
+                padding-bottom: 20px;
+            }
+            .sudokuDiv table tr td:nth-child(3n){
+                padding-right: 20px;
+            }
+            .sudokuDiv table tr:last-child td{
+                padding-bottom: 1;
+            }
+            .sudokuDiv table tr td:last-child{
+                padding-right: 1;
+            }
+
+            #sudoku .constant{
+                color: rgb(155, 152, 152);
+            }
+            .solved table{
+                background-color: rgb(203, 243, 203);
+                color: rgb(2, 79, 2);
+            }
+            .unsolved table{
+                background-color: rgb(243, 203, 203);
+                color: rgb(79, 17, 2);
+            }
+
+            #sudokuCustom{
+                -webkit-user-select: none; /* Safari */
+                -ms-user-select: none; /* IE 10 and IE 11 */
+                user-select: none; /* Standard syntax */
+            }
+            #sudokuCustom td{
+                cursor: pointer;
+            }
+
+            .fetching{
+                cursor: progress;
+            }
+            button.fetching{
+                border-style: inset;
+            }
+        </style>
+
+    </head>
+    <body>
+        <!--NEXT LINE CAN BE DELETED-->
+        <script type="module">import Buttons from "../buttons.js"; Buttons(document.body)</script>
+
+        <div id="sudoku" class="sudokuDiv">
+        </div>
+        <div id="sudokuCustom" class="sudokuDiv">
+            <button id="sudokuCustomStart_btn" type="button">Start custom sudoku</button>
+        </div>
+
+        <button id="solveSudoku_btn" type="button">Solve Sudoku!</button>
+        <p id="progress">number of iterations</p>
+        <input type="range" id="progress_bar" max="1" step="0.001" value="0"><br>
+        <button id="fetchSudoku_btn" type="button">I'm feeling lucky</button>
+        <p><span>Difficulty: </span><span id="difficulty">custom</span></p>
+        <button id="sudokuCustom_btn" type="button">Custom sudoku</button>
+        
+
+        <script type="module">
+            import { Sudoku } from "./sudoku.js";
+            import {func} from "./fetch.js";
+            import {Progress} from "./progress.js";
+            import {CustomSudoku} from "./CustomSudoku.js";
+
+            var S;
+
+            function newSudoku(t){
+                document.getElementById("sudoku").classList.remove("solved", "unsolved");
+                document.getElementById("progress").innerHTML = "number of iterations";
+                
+                S = new Sudoku(t);
+                create();
+                //override objects Update() & Solved() & Unsolved() methods
+                S.Update = function(itteration){
+                    document.getElementById("progress").innerHTML = itteration;
+                    update()
+                }
+                S.Solved = function(){
+                    document.getElementById("sudoku").classList.add("solved");
+                }
+                S.Unsolved = function(){
+                    document.getElementById("sudoku").classList.add("unsolved");
+                }
+            }
+            function create(){
+                let div = document.getElementById("sudoku");
+                div.innerHTML = "";
+                let table = document.createElement("table");
+                for (let row = 0; row < S.horizontals.length; row++) {
+                    let r = document.createElement("tr");
+                    for (let col = 0; col < S.horizontals[row].length; col++) {
+                        let c = document.createElement("td");
+                        let value = S.horizontals[row][col].value;
+
+                        if(value !== 0){c.classList.add("constant")}
+                        c.innerHTML = (value == 0) ? " " : value;
+                        
+                        r.appendChild(c);
+                    }
+                    table.appendChild(r);
+                    div.appendChild(table);
+                }
+            }
+
+
+            //create update function
+            function update(){
+                let div = document.getElementById("sudoku");
+                let table = div.children;
+
+                for (let row = 0; row < S.horizontals.length; row++) {
+                    for (let col = 0; col < S.horizontals[row].length; col++) {
+                        let td = table.item(0).children.item(row).children.item(col);
+
+                        let value = S.horizontals[row][col].value;
+
+                        td.innerHTML = (value == 0) ? " " : value;
+                    }
+                }
+
+                Progress.updateState(S.numbers);
+            }
+
+
+
+            //let t = [[0,4,8,3,9,5,7,1,6],[5,7,1,6,2,8,3,4,9],[9,3,6,7,4,1,5,8,2],[6,8,2,5,3,9,1,7,4],[3,5,9,1,7,4,6,2,8],[7,1,4,8,6,2,9,5,3],[8,6,3,4,1,7,2,9,5],[1,9,5,2,8,6,4,3,7],[0,2,7,9,5,3,8,6,0]];
+            let t = [[0,4,0,3,0,5,0,1,0],[0,7,1,0,2,0,3,0,0],[9,0,6,0,4,1,0,8,0],[6,0,2,0,3,0,1,0,4],[0,5,0,1,0,4,0,2,0],[0,1,4,0,6,2,0,5,0],[0,6,3,0,1,0,0,9,0],[1,0,5,2,0,6,0,3,0],[0,0,7,0,0,3,0,6,0]];
+            
+            //create Sudoku{}
+            newSudoku(t);
+
+
+            Progress.setElement(document.getElementById("progress_bar"));
+
+            document.getElementById("solveSudoku_btn").addEventListener("click", () => {S.Solve(25)});
+            document.getElementById("fetchSudoku_btn").addEventListener("click", async (e) => {
+                e.target.classList.add("fetching");
+                let obj = await func();
+                newSudoku(obj.numbers);
+                document.getElementById("difficulty").innerHTML = obj.difficulty;
+                Progress.setSolution(obj.solution);
+                e.target.classList.remove("fetching");
+            });
+            document.getElementById("sudokuCustom_btn").addEventListener("click", () => {
+                CustomSudoku.create(document.getElementById("sudokuCustom"))
+            })
+            document.getElementById("sudokuCustomStart_btn").addEventListener("click", () => {
+                newSudoku(CustomSudoku.getValue());
+                S.Solve(2);
+            })
+        </script>
+    </body>
+</html>
