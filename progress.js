@@ -4,6 +4,14 @@ export const Progress = {
     solution: [], //solution of sudoku from fetched data
     solutionScore: 0,
     state: [], //current state of sudoku grid
+    Reset: function(){
+        this.elementMin = false;
+        this.solution = [];
+        this.solutionScore = 0;
+        this.state = [];
+
+        this.element.value = 0;
+    },
     setElement: function(e){
         this.element = e;
     },

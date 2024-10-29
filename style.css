@@ -18,6 +18,11 @@ td{
     border: 3px solid #cfcece;
     box-shadow: 1px 1px 0px 0px #cfcece, 2px 2px 0px 0px #cfcece, 3px 3px 0px #cfcece;
     cursor: not-allowed;
+    pointer-events: none;
+}
+.blocked_btn::after{
+    content: "";
+    cursor: not-allowed;
 }
 button{
     padding: 0.5em 1em;
@@ -28,12 +33,19 @@ button{
     box-shadow: 1px 1px 0px 0px #a7a7a7, 2px 2px 0px 0px #a7a7a7, 3px 3px 0px #a7a7a7;
     cursor: pointer;
     text-decoration: none;
+    transition: 0.5s all ease;
 
 }
-#solveSudoku_btn, #sudokuCustomStart_btn{
+.solveSudoku_btn_new, .solveSudoku_btn_stopped{
     background-color: #a5ffa3;
     border: 3px solid #6fff6c;
     box-shadow: 1px 1px 0px 0px #6fff6c, 2px 2px 0px 0px #6fff6c, 3px 3px 0px #6fff6c;
+}
+.solveSudoku_btn_running{
+    background-color: #ffa3a3;
+    border: 3px solid #ff6c6c;
+    box-shadow: 1px 1px 0px 0px #ff6c6c, 2px 2px 0px 0px #ff6c6c, 3px 3px 0px #ff6c6c;
+    
 }
 button:active{
     box-shadow: 0px 0px 0px 0px;
@@ -47,7 +59,6 @@ button:active{
     flex-direction: column-reverse;
 }
 
-
 .show{
     transition: 1s all;
     overflow-y: hidden;
@@ -59,37 +70,41 @@ button:active{
     max-height: 0px;
 }
 
-
-
 #progress_bar {
     -webkit-appearance: none;
     -moz-apperance: none;
     height: 20px;
     box-shadow: -3px -3px 0px #a7a7a7, 3px -3px 0px #a7a7a7, -3px 3px 0px #a7a7a7, 3px 3px 0px #a7a7a7;
 }
-
 #progress_bar::-moz-range-track {
     border: none;
     background: none;
     outline: none;
 }
-
 #progress_bar:focus {
     outline: none;
     border: none;
 }
-
 #progress_bar::-webkit-slider-thumb {
     -webkit-appearance: none !important;
     background-color: #e3e3e3;
     height: 20px;
     width: 7px;
 }
-
 #progress_bar::-moz-range-thumb {
     -moz-appearance: none !important;
     background-color: #e3e3e3;
     border: none;
     height: 20px;
     width: 7px;
+}
+
+.solveSudoku_btn_new::after{
+    content: "SOLVE SUDOKU!";
+}
+.solveSudoku_btn_running::after{
+    content: "PAUSE solving";
+}
+.solveSudoku_btn_stopped::after{
+    content: "CONTINUE solving";
 }

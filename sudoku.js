@@ -89,7 +89,13 @@ export class Sudoku{
 
         this.variables[0].First(); //so that sudoku can be even unsolved
 
+        this.StartSolving(sleepDuration);
+    }
+    StartSolving(sleepDuration){
         this.intervalVar = setInterval(() => {this.Solving(this)}, sleepDuration)
+    }
+    StopSolving(){
+        clearInterval(this.intervalVar);
     }
     Solving(that){
         const obj = that;
@@ -110,7 +116,7 @@ export class Sudoku{
         }
         
         if (obj.n >= obj.variables.length) { //end interval if at the end of sudoku
-            clearInterval(obj.intervalVar);
+            obj.StopSolving();
 
             obj.Solved();
         }
@@ -133,7 +139,8 @@ export class Sudoku{
             //If first of variables needs restart, it means that other solutions were tried and that sudoku has no solution
             if (obj.variables[obj.n].value >= 9) {
                 if(!obj.variables[obj.n].Reset()) {
-                    clearInterval(obj.intervalVar);
+                    obj.StopSolving();
+
                     obj.Unsolved();
                 }
                 obj.n = obj.n - 1;
