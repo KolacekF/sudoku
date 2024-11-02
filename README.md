@@ -1,17 +1,19 @@
-#Sudoku
+# Sudoku
 
-##Solver for sudoku
-    - It solves sudoku for you by force. It will try every possible compination
-        1. It finds first possible solutions
-        2. If sudoku has no sollution, the script will tell you
+## Solver for sudoku
+- It solves sudoku for you by force. It will try every possible combination
+    1. It finds first possible solutions
+    2. If sudoku has no sollution, the script will tell you
 
-##Main goal
+## Main goal
 1. You can WATCH a script solve random sudoku from API
 2. You can GIVE a script a entry, that it can then solve. If entry has no solution, the script will tell you.
 
-##Structure
-`sudoku.js` - main logic here. Sudoku{} object is constructed from sudoku vector [[],[],[],[],[],[],[],[],[]]
-    - ####start solving
+![screenshot of the page](examples/example_1.png)
+
+## Structure
+- `sudoku.js` - main logic here. Sudoku{} object is constructed from sudoku vector [[],[],[],[],[],[],[],[],[]]
+    - **start solving**
     ```javascript
     let sudokuVector = [[0,4,8,3,9,5,7,1,6],
     [5,7,1,6,2,8,3,4,9],[9,3,6,7,4,1,5,8,2],
@@ -24,7 +26,7 @@
     
     S.StartSolving(interval);
     ```
-    - ####implementing frontend
+    - #### implementing frontend
         - every interval a `S.Update()` method is called. The method can be override for an instance `S`.
         - at the end, methods `S.Solved()` or `S.Unsolved()` are called. The method can be override for an instance `S`.
         - you can also change the interval during running of the script by: 
@@ -33,19 +35,15 @@
         S.StopSolving();
         S.StartSolving(newInterval);
         ```
-`fetch.js` - Dosuku API is called for random set of sudoku. Module returns object `{numbers, difficulty, solution}` 
+- `fetch.js` - Dosuku API is called for random set of sudoku. Module returns object `{numbers, difficulty, solution}` 
     - `numbers` = sudoku vector
     - `difficulty` = string of dificulty
     - `solution` = sudoku vector for solution
-`progress.js` - show from 0 to 1 how much close is the sudoku from solution
+- `progress.js` - show from 0 to 1 how much close is the sudoku from solution
     - `Progress.setElement(HTML_node_element)` - `.value` of given element will be update
-     `Progress.setSolution(solution)` - solution will be saved from sudoku vector
-     `Progress.updateState(state)` - based on given state, update `.value` of given HTML node element
-`customSudoku.js` - 
+    - `Progress.setSolution(solution)` - solution will be saved from sudoku vector
+    - `Progress.updateState(state)` - based on given state, update `.value` of given HTML node element
+- `customSudoku.js` - 
     - `CustomSudoku.create(HTML_element_node)` - inside given HTML element node (div wrapper for example) create sudoku grid. Every element is given its own function for changing number values
     - `CustomSudoku.getValue()` - get the state of created sudoku grid and `return` it as sudoku vector
-`index.html`, `style.css` - frontend...
-
-
-##images
-![screenshot of the page](examples/example_1.png)
+- `index.html`, `style.css` - frontend...
